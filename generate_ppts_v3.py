@@ -192,7 +192,7 @@ def add_para(tf, text, font_size=Pt(11), bold=False, color=COLOR_BLACK,
     p.alignment = alignment
     p.space_before = space_before
     p.space_after = space_after
-    p.line_spacing = Pt(font_size.pt * 1.3)
+    p.line_spacing = 1.25
     run = p.add_run()
     run.text = text
     run.font.size = font_size
@@ -304,16 +304,47 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
         tf = txBox.text_frame
         tf.word_wrap = True
 
-        # Risk point title (first paragraph)
+        # Risk point title — use first paragraph to avoid leading blank line
         rp_title = sections.get('title', '')
         if rp_title:
-            add_para(tf, rp_title, font_size=Pt(16), bold=True, color=COLOR_DARK_BLUE,
-                     space_before=Pt(0), space_after=Pt(6))
+            p0 = tf.paragraphs[0]
+            p0.alignment = PP_ALIGN.LEFT
+            p0.space_before = Pt(0)
+            p0.space_after = Pt(6)
+            p0.line_spacing = 1.25
+            run0 = p0.add_run()
+            run0.text = rp_title
+            run0.font.size = Pt(16)
+            run0.font.bold = True
+            run0.font.color.rgb = COLOR_DARK_BLUE
+            run0.font.name = 'Microsoft YaHei'
+
+        # Track whether first para already used
+        first_used = bool(rp_title)
+
+        # Helper: add section header using first para if available, else add new
+        def add_first_section(tf, text, color):
+            nonlocal first_used
+            if not first_used:
+                p0 = tf.paragraphs[0]
+                p0.alignment = PP_ALIGN.LEFT
+                p0.space_before = Pt(8)
+                p0.space_after = Pt(3)
+                p0.line_spacing = 1.25
+                run0 = p0.add_run()
+                run0.text = text
+                run0.font.size = Pt(16)
+                run0.font.bold = True
+                run0.font.color.rgb = color
+                run0.font.name = 'Microsoft YaHei'
+                first_used = True
+            else:
+                add_section_header(tf, text, color)
 
         # Risk description
         desc = sections.get('risk_desc', '')
         if desc:
-            add_section_header(tf, '【风险描述】', COLOR_DESC)
+            add_first_section(tf, '【风险描述】', COLOR_DESC)
             add_body_text(tf, desc, Pt(14))
 
         # Policy basis
