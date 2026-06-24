@@ -289,6 +289,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, chapter_idx, out
     p.font.size = Pt(40)
     p.font.bold = True
     p.font.color.rgb = COLOR_WHITE
+    p.font.name = 'Microsoft YaHei'
     p.alignment = PP_ALIGN.CENTER
 
     # Subtitle line (thin white rule)
@@ -306,6 +307,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, chapter_idx, out
     p2.text = f"共 {len(risk_points)} 个风险点"
     p2.font.size = Pt(22)
     p2.font.color.rgb = RGBColor(0xCC, 0xCC, 0xCC)
+    p2.font.name = 'Microsoft YaHei'
     p2.alignment = PP_ALIGN.CENTER
 
     txBox3 = slide.shapes.add_textbox(Inches(0.8), Inches(5.0), Inches(11.733), Inches(0.8))
@@ -314,6 +316,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, chapter_idx, out
     p3.text = "税费合规指引 (2.0版)"
     p3.font.size = Pt(16)
     p3.font.color.rgb = RGBColor(0xAA, 0xBB, 0xCC)
+    p3.font.name = 'Microsoft YaHei'
     p3.alignment = PP_ALIGN.CENTER
 
     # ===== Content Slides =====
@@ -337,6 +340,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, chapter_idx, out
         run_h.font.size = Pt(15)
         run_h.font.bold = True
         run_h.font.color.rgb = COLOR_WHITE
+        run_h.font.name = 'Microsoft YaHei'
 
         # ---- Content area ----
         txBox = slide.shapes.add_textbox(Inches(0.5), Inches(0.85), Inches(12.333), Inches(6.4))
