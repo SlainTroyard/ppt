@@ -192,7 +192,7 @@ def add_para(tf, text, font_size=Pt(11), bold=False, color=COLOR_BLACK,
     p.alignment = alignment
     p.space_before = space_before
     p.space_after = space_after
-    p.line_spacing = 1.25
+    p.line_spacing = 1.1
     run = p.add_run()
     run.text = text
     run.font.size = font_size
@@ -311,7 +311,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             p0.alignment = PP_ALIGN.JUSTIFY
             p0.space_before = Pt(0)
             p0.space_after = Pt(0)
-            p0.line_spacing = 1.25
+            p0.line_spacing = 1.1
             run0 = p0.add_run()
             run0.text = rp_title
             run0.font.size = Pt(16)
@@ -330,7 +330,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
                 p0.alignment = PP_ALIGN.JUSTIFY
                 p0.space_before = Pt(0)
                 p0.space_after = Pt(0)
-                p0.line_spacing = 1.25
+                p0.line_spacing = 1.1
                 run0 = p0.add_run()
                 run0.text = text
                 run0.font.size = Pt(16)
