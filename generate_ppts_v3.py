@@ -44,6 +44,9 @@ def clean_text(text):
     text = re.sub(r'\n\s*\d{1,3}\s*\n', '\n', text)
     # Remove inline page numbers between CJK punctuation and next CJK char
     text = re.sub(r'([。；）\)])\s*\d{1,3}\s*([一-鿿【第（\(])', r'\1\2', text)
+    # Remove standalone page numbers on their own line
+    text = re.sub(r'\n\s*\d{1,3}\s*\n', '\n', text)
+    text = re.sub(r'\n\s*\d{1,3}\s*$', '', text)
     # Normalize multiple blank lines
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
@@ -133,6 +136,10 @@ def clean_section_body(text):
     # Remove inline page numbers: 。19根据 -> 。根据
     text = re.sub(r'([。；）\)])\s*\d{1,3}\s*([一-鿿【第（\(])', r'\1\2', text)
     text = re.sub(r'^\d{1,3}\s*([一-鿿【])', r'\1', text)
+    # Remove standalone page numbers (1-3 digit numbers that are their own line)
+    text = re.sub(r'\n\s*\d{1,3}\s*\n', '\n', text)
+    # Also remove trailing page number at end of text
+    text = re.sub(r'\n\s*\d{1,3}\s*$', '', text)
 
     # Join lines that are broken by PDF layout (single newline within a paragraph)
     # A line that doesn't end with CJK punctuation and the next line starts with CJK char
