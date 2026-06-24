@@ -47,6 +47,11 @@ def clean_text(text):
     # Remove standalone page numbers on their own line
     text = re.sub(r'\n\s*\d{1,3}\s*\n', '\n', text)
     text = re.sub(r'\n\s*\d{1,3}\s*$', '', text)
+    # Remove spaces between digits and CJK characters
+    text = re.sub(r'(?<=[一-鿿）\)】、，。；：])\s+(?=\d)', '', text)
+    text = re.sub(r'(?<=\d)\s+(?=[一-鿿])', '', text)
+    # Remove spaces after closing CJK brackets
+    text = re.sub(r'(?<=[）】》])\s+(?=[一-鿿\d【第（《])', '', text)
     # Normalize multiple blank lines
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
@@ -169,6 +174,12 @@ def clean_section_body(text):
         if not item:
             result.append('')
         else:
+            # Remove spaces between digits and CJK characters (PDF layout artifacts)
+            # Use Unicode lookbehind/lookahead for reliable CJK matching
+            item = re.sub(r'(?<=[一-鿿）\)】、，。；：])\s+(?=\d)', '', item)
+            item = re.sub(r'(?<=\d)\s+(?=[一-鿿])', '', item)
+            # Remove spaces after closing CJK brackets before CJK/digit text
+            item = re.sub(r'(?<=[）】》])\s+(?=[一-鿿\d【第（《])', '', item)
             result.append(item)
 
     return '\n'.join(result)
