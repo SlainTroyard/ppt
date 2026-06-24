@@ -21,13 +21,24 @@ CN_NUMS = {
 }
 
 # Colors
-COLOR_DARK_BLUE = RGBColor(0x1B, 0x3A, 0x5C)
 COLOR_BLACK = RGBColor(0x00, 0x00, 0x00)
 COLOR_WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 COLOR_POLICY = RGBColor(0x1B, 0x5C, 0x9E)     # blue for 政策依据 header
 COLOR_RISK = RGBColor(0xCC, 0x33, 0x33)        # red for 预计风险 header
 COLOR_SOLUTION = RGBColor(0x00, 0x80, 0x40)    # green for 解决方法 header
 COLOR_DESC = RGBColor(0x33, 0x33, 0x33)        # dark gray for 风险描述 header
+
+# Chapter theme colors (cycle through 5)
+CHAPTER_THEMES = [
+    RGBColor(0x1B, 0x3A, 0x5C),  # deep navy
+    RGBColor(0x0D, 0x5E, 0x5E),  # deep teal
+    RGBColor(0x6B, 0x2D, 0x3B),  # burgundy
+    RGBColor(0x2D, 0x5A, 0x3D),  # forest green
+    RGBColor(0x3D, 0x4F, 0x6B),  # slate blue
+]
+
+def get_theme_color(chapter_idx):
+    return CHAPTER_THEMES[chapter_idx % len(CHAPTER_THEMES)]
 
 
 def read_file(filepath):
@@ -238,20 +249,39 @@ def add_section_header(tf, text, color):
              space_before=Pt(0), space_after=Pt(0))
 
 
-def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
+def create_chapter_ppt(chapter_title, risk_points, chapter_num, chapter_idx, output_dir):
     """Create a PowerPoint presentation for a chapter."""
     prs = Presentation()
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
     blank_layout = prs.slide_layouts[6]
 
+    theme = get_theme_color(chapter_idx)
+
     # ===== Title Slide =====
     slide = prs.slides.add_slide(blank_layout)
     bg = slide.background
     bg.fill.solid()
-    bg.fill.fore_color.rgb = COLOR_DARK_BLUE
+    bg.fill.fore_color.rgb = theme
 
-    txBox = slide.shapes.add_textbox(Inches(0.8), Inches(1.5), Inches(11.733), Inches(2.5))
+    # Decorative circle behind title (subtle, semi-transparent lighter shade)
+    circle_size = Inches(6)
+    circle = slide.shapes.add_shape(
+        9,  # oval
+        Inches(3.667), Inches(0.3), circle_size, circle_size
+    )
+    circle.fill.solid()
+    # Lighter shade of theme
+    r = min(theme[0] + 60, 255)
+    g = min(theme[1] + 60, 255)
+    b = min(theme[2] + 60, 255)
+    circle.fill.fore_color.rgb = RGBColor(r, g, b)
+    circle.line.fill.background()
+    # Send to back
+    circle.rotation = 0
+
+    # Title text
+    txBox = slide.shapes.add_textbox(Inches(0.8), Inches(1.8), Inches(11.733), Inches(2.5))
     tf = txBox.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
@@ -261,12 +291,21 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
     p.font.color.rgb = COLOR_WHITE
     p.alignment = PP_ALIGN.CENTER
 
-    txBox2 = slide.shapes.add_textbox(Inches(0.8), Inches(4.2), Inches(11.733), Inches(0.8))
+    # Subtitle line (thin white rule)
+    rule = slide.shapes.add_shape(
+        1,  # rectangle
+        Inches(4.5), Inches(4.1), Inches(4.333), Inches(0.02)
+    )
+    rule.fill.solid()
+    rule.fill.fore_color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    rule.line.fill.background()
+
+    txBox2 = slide.shapes.add_textbox(Inches(0.8), Inches(4.3), Inches(11.733), Inches(0.6))
     tf2 = txBox2.text_frame
     p2 = tf2.paragraphs[0]
     p2.text = f"共 {len(risk_points)} 个风险点"
     p2.font.size = Pt(22)
-    p2.font.color.rgb = RGBColor(0xAA, 0xBB, 0xCC)
+    p2.font.color.rgb = RGBColor(0xCC, 0xCC, 0xCC)
     p2.alignment = PP_ALIGN.CENTER
 
     txBox3 = slide.shapes.add_textbox(Inches(0.8), Inches(5.0), Inches(11.733), Inches(0.8))
@@ -274,7 +313,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
     p3 = tf3.paragraphs[0]
     p3.text = "税费合规指引 (2.0版)"
     p3.font.size = Pt(16)
-    p3.font.color.rgb = RGBColor(0x88, 0x99, 0xAA)
+    p3.font.color.rgb = RGBColor(0xAA, 0xBB, 0xCC)
     p3.alignment = PP_ALIGN.CENTER
 
     # ===== Content Slides =====
@@ -286,7 +325,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
         # ---- Header bar ----
         header = slide.shapes.add_shape(1, Inches(0), Inches(0), prs.slide_width, Inches(0.65))
         header.fill.solid()
-        header.fill.fore_color.rgb = COLOR_DARK_BLUE
+        header.fill.fore_color.rgb = theme
         header.line.fill.background()
 
         tf_h = header.text_frame
@@ -316,7 +355,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             run0.text = rp_title
             run0.font.size = Pt(16)
             run0.font.bold = True
-            run0.font.color.rgb = COLOR_DARK_BLUE
+            run0.font.color.rgb = theme
             run0.font.name = 'Microsoft YaHei'
 
         # Track whether first para already used
@@ -365,6 +404,14 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             add_section_header(tf, '【解决方法】', COLOR_SOLUTION)
             add_body_text(tf, solution, Pt(14))
 
+        # ---- Bottom accent line ----
+        accent = slide.shapes.add_shape(
+            1, Inches(0.5), Inches(7.35), Inches(12.333), Inches(0.03)
+        )
+        accent.fill.solid()
+        accent.fill.fore_color.rgb = theme
+        accent.line.fill.background()
+
     # Save
     safe_title = chapter_title.replace('/', '-').replace('、', '-')
     filename = f"{chapter_num}_{safe_title}.pptx"
@@ -388,13 +435,13 @@ def main():
     print(f"Found {len(chapters)} chapters\n")
 
     total_rp = 0
-    for title, content, chapter_num, cn_num in chapters:
+    for idx, (title, content, chapter_num, cn_num) in enumerate(chapters):
         print(f"Chapter {chapter_num}: {title}")
         risk_points = extract_risk_points(content)
         print(f"  {len(risk_points)} risk points")
         total_rp += len(risk_points)
         if risk_points:
-            create_chapter_ppt(title, risk_points, chapter_num, output_dir)
+            create_chapter_ppt(title, risk_points, chapter_num, idx, output_dir)
         else:
             print(f"  WARNING: No risk points found!")
 
