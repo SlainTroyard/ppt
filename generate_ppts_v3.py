@@ -186,7 +186,7 @@ def clean_section_body(text):
 
 
 def add_para(tf, text, font_size=Pt(11), bold=False, color=COLOR_BLACK,
-             space_before=Pt(0), space_after=Pt(0), alignment=PP_ALIGN.LEFT):
+             space_before=Pt(0), space_after=Pt(0), alignment=PP_ALIGN.JUSTIFY):
     """Add a paragraph to a text frame."""
     p = tf.add_paragraph()
     p.alignment = alignment
@@ -292,7 +292,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
         tf_h = header.text_frame
         tf_h.word_wrap = True
         tf_h.margin_left = Inches(0.4)
-        tf_h.paragraphs[0].alignment = PP_ALIGN.LEFT
+        tf_h.paragraphs[0].alignment = PP_ALIGN.JUSTIFY
         run_h = tf_h.paragraphs[0].add_run()
         run_h.text = f"{chapter_title}  |  风险点 {sections.get('rp_num', '?')}"
         run_h.font.size = Pt(15)
@@ -308,7 +308,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
         rp_title = sections.get('title', '')
         if rp_title:
             p0 = tf.paragraphs[0]
-            p0.alignment = PP_ALIGN.LEFT
+            p0.alignment = PP_ALIGN.JUSTIFY
             p0.space_before = Pt(0)
             p0.space_after = Pt(0)
             p0.line_spacing = 1.25
@@ -327,7 +327,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             nonlocal first_used
             if not first_used:
                 p0 = tf.paragraphs[0]
-                p0.alignment = PP_ALIGN.LEFT
+                p0.alignment = PP_ALIGN.JUSTIFY
                 p0.space_before = Pt(0)
                 p0.space_after = Pt(0)
                 p0.line_spacing = 1.25
