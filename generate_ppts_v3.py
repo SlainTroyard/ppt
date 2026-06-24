@@ -184,7 +184,7 @@ def add_para(tf, text, font_size=Pt(11), bold=False, color=COLOR_BLACK,
     return p
 
 
-def add_body_text(tf, text, font_size=Pt(11)):
+def add_body_text(tf, text, font_size=Pt(14)):
     """Add body text (black), splitting long paragraphs naturally."""
     paragraphs = text.split('\n')
     for para in paragraphs:
@@ -216,7 +216,7 @@ def add_body_text(tf, text, font_size=Pt(11)):
 
 def add_section_header(tf, text, color):
     """Add a colored section header."""
-    add_para(tf, text, font_size=Pt(14), bold=True, color=color,
+    add_para(tf, text, font_size=Pt(16), bold=True, color=color,
              space_before=Pt(8), space_after=Pt(3))
 
 
@@ -289,32 +289,32 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
         # Risk point title (first paragraph)
         rp_title = sections.get('title', '')
         if rp_title:
-            add_para(tf, rp_title, font_size=Pt(14), bold=True, color=COLOR_DARK_BLUE,
+            add_para(tf, rp_title, font_size=Pt(16), bold=True, color=COLOR_DARK_BLUE,
                      space_before=Pt(0), space_after=Pt(6))
 
         # Risk description
         desc = sections.get('risk_desc', '')
         if desc:
             add_section_header(tf, '【风险描述】', COLOR_DESC)
-            add_body_text(tf, desc, Pt(11))
+            add_body_text(tf, desc, Pt(14))
 
         # Policy basis
         policy = sections.get('policy', '')
         if policy:
             add_section_header(tf, '【政策依据】', COLOR_POLICY)
-            add_body_text(tf, policy, Pt(11))
+            add_body_text(tf, policy, Pt(14))
 
         # Expected risk
         expected = sections.get('risk_expected', '')
         if expected:
             add_section_header(tf, '【预计风险】', COLOR_RISK)
-            add_body_text(tf, expected, Pt(11))
+            add_body_text(tf, expected, Pt(14))
 
         # Solution
         solution = sections.get('solution', '')
         if solution:
             add_section_header(tf, '【解决方法】', COLOR_SOLUTION)
-            add_body_text(tf, solution, Pt(11))
+            add_body_text(tf, solution, Pt(14))
 
     # Save
     safe_title = chapter_title.replace('/', '-').replace('、', '-')
