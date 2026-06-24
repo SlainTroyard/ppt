@@ -186,7 +186,7 @@ def clean_section_body(text):
 
 
 def add_para(tf, text, font_size=Pt(11), bold=False, color=COLOR_BLACK,
-             space_before=Pt(2), space_after=Pt(2), alignment=PP_ALIGN.LEFT):
+             space_before=Pt(0), space_after=Pt(0), alignment=PP_ALIGN.LEFT):
     """Add a paragraph to a text frame."""
     p = tf.add_paragraph()
     p.alignment = alignment
@@ -235,7 +235,7 @@ def add_body_text(tf, text, font_size=Pt(14)):
 def add_section_header(tf, text, color):
     """Add a colored section header."""
     add_para(tf, text, font_size=Pt(16), bold=True, color=color,
-             space_before=Pt(8), space_after=Pt(3))
+             space_before=Pt(0), space_after=Pt(0))
 
 
 def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
@@ -310,7 +310,7 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             p0 = tf.paragraphs[0]
             p0.alignment = PP_ALIGN.LEFT
             p0.space_before = Pt(0)
-            p0.space_after = Pt(6)
+            p0.space_after = Pt(0)
             p0.line_spacing = 1.25
             run0 = p0.add_run()
             run0.text = rp_title
@@ -328,8 +328,8 @@ def create_chapter_ppt(chapter_title, risk_points, chapter_num, output_dir):
             if not first_used:
                 p0 = tf.paragraphs[0]
                 p0.alignment = PP_ALIGN.LEFT
-                p0.space_before = Pt(8)
-                p0.space_after = Pt(3)
+                p0.space_before = Pt(0)
+                p0.space_after = Pt(0)
                 p0.line_spacing = 1.25
                 run0 = p0.add_run()
                 run0.text = text
